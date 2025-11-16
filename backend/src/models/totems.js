@@ -17,8 +17,7 @@ const TotemSchema = new Schema(
     },
     lastSeen: {
         type: Date,
-        required: [true, 'LastSeen is necessary']
-
+        trim: true
     }
   },
   { timestamps: true }
