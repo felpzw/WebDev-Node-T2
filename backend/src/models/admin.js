@@ -13,12 +13,12 @@ const AdminSchema = new Schema(
     password: {
         type: String,
         required: [true, 'Password is necessary.'],
-    },
+    }/*,
     name: {
         type: String,
         required: [true, 'Name is necessary']
 
-    },
+    }*/,
     nonce: {
         type: Number,
 
