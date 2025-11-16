@@ -30,7 +30,7 @@ const update = async (req, res) => {
     
     res.json(slide);
   } catch (error) {
-    if (error.message === 'Slide não encontrado') {
+    if (error.message === 'Slide not found') {
       return res.status(404).json({ message: error.message });
     }
     res.status(400).json({ message: error.message });
@@ -44,7 +44,7 @@ const remove = async (req, res) => {
     
     res.status(204).send(); 
   } catch (error) {
-    if (error.message === 'Slide não encontrado') {
+    if (error.message === 'Slide not found') {
       return res.status(404).json({ message: error.message });
     }
     res.status(500).json({ message: error.message });
