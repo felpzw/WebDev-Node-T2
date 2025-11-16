@@ -1,5 +1,8 @@
 const slideService = require('../services/slideServices');
 //possivel socket service aqui - lembrar de testar.
+// add socket service
+
+const { broadcastSlidesUpdate } = require('../services/socketService');
 
 
 const list = async (req, res) => {
@@ -14,6 +17,9 @@ const list = async (req, res) => {
 const create = async (req, res) => {
   try {
     const slide = await slideService.createSlide(req.body);
+
+    broadcastSlidesUpdate();
+
     res.status(201).json(slide);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -27,6 +33,8 @@ const update = async (req, res) => {
     const slideData = req.body;
     
     const slide = await slideService.updateSlide(slideId, slideData);
+
+    broadcastSlidesUpdate();
     
     res.json(slide);
   } catch (error) {
@@ -41,6 +49,8 @@ const remove = async (req, res) => {
   try {
     const slideId = req.params.id;
     await slideService.deleteSlide(slideId);
+
+    broadcastSlidesUpdate();
     
     res.status(204).send(); 
   } catch (error) {
