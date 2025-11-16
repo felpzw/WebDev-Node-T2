@@ -2,7 +2,7 @@ const slideService = require('../services/slideServices');
 //possivel socket service aqui - lembrar de testar.
 // add socket service
 
-const { broadcastSlidesUpdate } = require('../services/socketService');
+const { broadcastSlidesUpdate } = require('../services/socketServices');
 
 
 const list = async (req, res) => {
