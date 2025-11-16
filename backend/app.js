@@ -1,12 +1,27 @@
+require("dotenv").config();
 const express = require("express");
+
+const { initSocketServer } = require("./src/api/services/socketServices.js");
+
+const cookieParser = require("cookie-parser");
+const http = require("http");
+
+const app = express();
+
+const port = process.env.SERVER_PORT;
 
 app.use(express.json());
 app.use(express.static(__dirname + "../frontend/public"));
 
-app.use("/clientes", require("./rotas/clientes.js"));
-app.use("/agendamentos", require("./rotas/agendamentos.js"));
-app.use("/admin", require("./rotas/admin.js"));
+app.use(cookieParser()); 
 
-app.listen(4000, function () {
-  console.log("Servidor rodando..");
+app.use("/api/auth", require("./src/api/routes/authRoutes.js"));
+app.use("/api/slide", require("./src/api/routes/slideRoutes.js"));
+app.use("/api/totem", require("./src/api/routes/totemRoutes.js"));
+
+const httpServer = http.createServer(app);
+initSocketServer(httpServer);
+
+httpServer.listen(port, function () {
+  console.log(`Servidor rodando na porta ${port}`);
 });
