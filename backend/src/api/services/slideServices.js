@@ -1,4 +1,4 @@
-const Slide = require('../../models/slide'); // Verifique o caminho para seu modelo
+const Slide = require('../../models/slides'); // Verifique o caminho para seu modelo
 
 /**
  * Lista todos os slides (para o painel do admin).
