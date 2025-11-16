@@ -1,4 +1,4 @@
-const slideService = require('../services/slideService');
+const slideService = require('../services/slideServices');
 //possivel socket service aqui - lembrar de testar.
 
 

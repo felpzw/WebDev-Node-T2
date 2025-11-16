@@ -1,4 +1,4 @@
-const totemService = require('../services/totemService');
+const totemService = require('../services/totemServices');
 
 const list = async (req, res) => {
   try {
