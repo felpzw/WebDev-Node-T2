@@ -1,0 +1,142 @@
+<template>
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Painel Administrativo</h1>
+      <button class="logout-button" @click="handleLogout">Sair</button>
+    </div>
+
+    <div class="admin-content">
+      <p>Bem-vindo, Administrador.</p>
+      <p>A partir daqui, você poderá gerenciar os slides e os totens.</p>
+      
+      <div class="action-cards">
+        <router-link to="/totem" class="card totem-card">
+          <h3>Ver Totem</h3>
+          <p>Visualizar a tela pública de slides em tempo real.</p>
+        </router-link>
+        
+        <div class="card soon-card">
+          <h3>Gerenciar Slides</h3>
+          <p>Criar, editar e remover slides. (Em breve)</p>
+        </div>
+
+         <div class="card soon-card">
+          <h3>Gerenciar Totens</h3>
+          <p>Registrar novos dispositivos. (Em breve)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { auth } from '../router';
+
+export default {
+  methods: {
+    handleLogout() {
+      auth.isLoggedIn = false;
+      localStorage.setItem('isLoggedIn', 'false');
+      
+      fetch('/api/auth/logoff').finally(() => {
+        // Redireciona para o login
+        this.$router.push('/login');
+      });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.admin-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #3a3a3a;
+  padding-bottom: 1rem;
+}
+
+.admin-header h1 {
+  color: #fff;
+  font-weight: 700;
+}
+
+.logout-button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #c94a4a;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #e57373;
+}
+
+.admin-content p {
+  font-size: 1.1rem;
+  color: #c0c0c0;
+  margin-bottom: 0.5rem;
+}
+
+.action-cards {
+  margin-top: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: #2a2a2a;
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid #3a3a3a;
+  text-decoration: none;
+  color: #e0e0e0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card h3 {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #9e9e9e;
+  line-height: 1.5;
+}
+
+.totem-card {
+  border-color: #4a90e2;
+}
+.totem-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.15);
+}
+
+.soon-card {
+  opacity: 0.6;
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+.soon-card h3 {
+  color: #9e9e9e;
+}
+</style>
