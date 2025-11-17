@@ -10,8 +10,8 @@
         <h3>Register New Totem</h3>
         <form @submit.prevent="createTotem">
           <div class="form-group">
-            <label for="name">Nome do Totem</label>
-            <input id="name" v-model="form.name" type="text" placeholder="Ex: Totem do RU" required />
+            <label for="name">Totem Name</label>
+            <input id="name" v-model="form.name" type="text" placeholder="Ex: Totem RU" required />
           </div>
           <button type="submit" :disabled="isLoading">
             {{ isLoading ? 'Registering...' : 'Register' }}

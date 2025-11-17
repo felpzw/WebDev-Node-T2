@@ -34,12 +34,12 @@
       </div>
 
       <div class="list-card">
-        <h3>Slides Atuais</h3>
+        <h3>Actual Slides</h3>
         <div v-if="isLoading && slides.length === 0" class="empty-list">
-          Carregando slides...
+          Loading slides...
         </div>
         <div v-else-if="slides.length === 0" class="empty-list">
-          Nenhum slide cadastrado.
+            No slides avaliable.
         </div>
         <ul v-else class="slide-list">
           <li v-for="slide in slides" :key="slide._id" class="slide-item">
