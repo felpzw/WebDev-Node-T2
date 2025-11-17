@@ -1,11 +1,11 @@
 <template>
   <div class="login-container">
     <div class="login-card">
-      <h2>Painel Administrativo</h2>
-      <p class="subtitle">Faça login para gerenciar os totens e slides.</p>
+      <h2>Admmin Panel</h2>
+      <p class="subtitle">Make Login to manage Totems and Slides</p>
       <form @submit.prevent="handleLogin">
         <div class="form-group">
-          <label for="username">Usuário</label>
+          <label for="username">Username</label>
           <input
             id="username"
             v-model="username"
@@ -15,7 +15,7 @@
           />
         </div>
         <div class="form-group">
-          <label for="password">Senha</label>
+          <label for="password">Password</label>
           <input
             id="password"
             v-model="password"
@@ -25,7 +25,7 @@
           />
         </div>
         <button type="submit" :disabled="isLoading">
-          {{ isLoading ? 'Entrando...' : 'Entrar' }}
+          {{ isLoading ? 'Logging in...' : 'Login' }}
         </button>
         <p v-if="error" class="error-message">{{ error }}</p>
       </form>
@@ -34,11 +34,9 @@
 </template>
 
 <script>
-// Importa o 'auth' do roteador para definir o estado de login
 import { auth } from '../router';
 
 export default {
-  // Options API
   data() {
     return {
       username: '',
@@ -65,19 +63,16 @@ export default {
         });
 
         if (response.ok) {
-          // O cookie httpOnly é definido automaticamente pelo navegador.
-          // Apenas marcamos o frontend como "logado".
           auth.isLoggedIn = true;
           localStorage.setItem('isLoggedIn', 'true');
           
-          // Redireciona para o painel de admin
           this.$router.push('/admin');
         } else {
           const data = await response.json();
-          this.error = data.message || 'Credenciais inválidas.';
+          this.error = data.message || 'Invalid Credentials.';
         }
       } catch (err) {
-        this.error = 'Não foi possível conectar ao servidor.';
+        this.error = 'Cant connect to server. Please try again later.';
       } finally {
         this.isLoading = false;
       }

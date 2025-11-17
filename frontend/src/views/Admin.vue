@@ -6,23 +6,23 @@
     </div>
 
     <div class="admin-content">
-      <p>Bem-vindo, Administrador.</p>
-      <p>A partir daqui, você poderá gerenciar os slides e os totens.</p>
+      <p>Welcome</p>
+      <p>Now you can manage Slides and Totens</p>
       
       <div class="action-cards">
         <router-link to="/totem" class="card totem-card">
-          <h3>Ver Totem</h3>
-          <p>Visualizar a tela pública de slides em tempo real.</p>
+          <h3>See Toten</h3>
+          <p>Viwer Public Screen</p>
         </router-link>
         
         <div class="card soon-card">
-          <h3>Gerenciar Slides</h3>
-          <p>Criar, editar e remover slides. (Em breve)</p>
+          <h3>Manage Slides</h3>
+          <p>Create Edit and Remove Slides</p>
         </div>
 
          <div class="card soon-card">
-          <h3>Gerenciar Totens</h3>
-          <p>Registrar novos dispositivos. (Em breve)</p>
+          <h3>Manage Totens</h3>
+          <p>Register new devices.</p>
         </div>
       </div>
     </div>
@@ -39,7 +39,7 @@ export default {
       localStorage.setItem('isLoggedIn', 'false');
       
       fetch('/api/auth/logoff').finally(() => {
-        // Redireciona para o login
+
         this.$router.push('/login');
       });
     },
