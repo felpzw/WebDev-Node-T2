@@ -15,15 +15,15 @@
           <p>Viwer Public Screen</p>
         </router-link>
         
-        <div class="card soon-card">
+        <router-link to="/admin/slides" class="card slide-card">
           <h3>Manage Slides</h3>
           <p>Create Edit and Remove Slides</p>
-        </div>
+        </router-link>
 
-         <div class="card soon-card">
+         <router-link to="/admin/totems" class="card totem-card-manage">
           <h3>Manage Totens</h3>
           <p>Register new devices.</p>
-        </div>
+          </router-link>
       </div>
     </div>
   </div>
@@ -106,7 +106,11 @@ export default {
   border: 1px solid #3a3a3a;
   text-decoration: none;
   color: #e0e0e0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card h3 {
@@ -122,21 +126,12 @@ export default {
   line-height: 1.5;
 }
 
-.totem-card {
-  border-color: #4a90e2;
-}
-.totem-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.15);
-}
+.totem-card-view { border-color: #4a90e2; }
+.totem-card-view:hover { box-shadow: 0 8px 20px rgba(74, 144, 226, 0.15); }
 
-.soon-card {
-  opacity: 0.6;
-  border-style: dashed;
-  cursor: not-allowed;
-}
+.slide-card { border-color: #50e3c2; }
+.slide-card:hover { box-shadow: 0 8px 20px rgba(80, 227, 194, 0.15); }
 
-.soon-card h3 {
-  color: #9e9e9e;
-}
+.totem-card-manage { border-color: #f5a623; }
+.totem-card-manage:hover { box-shadow: 0 8px 20px rgba(245, 166, 35, 0.15); }
 </style>
