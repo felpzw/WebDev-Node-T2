@@ -11,7 +11,7 @@
         <form @submit.prevent="handleSaveSlide">
           <div class="form-group">
             <label for="title">Title</label>
-            <input id="title" v-model="form.title" type="text" placeholder="Ex: Cardápio RU" required />
+            <input id="title" v-model="form.title" type="text" placeholder="Ex: Lunch Menu" required />
           </div>
           <div class="form-group">
             <label for="duration">Duration (seconds)</label>
@@ -22,8 +22,8 @@
             <input id="expirationDate" v-model="form.expirationDate" type="datetime-local" required />
           </div>
           <div class="form-group">
-            <label for="content">HTML</label>
-            <textarea id="content" v-model="form.content" rows="10" placeholder="Ex: <h1>Rice...</h1>" required></textarea>
+            <label for="content">HTML Content</label>
+            <textarea id="content" v-model="form.content" rows="10" placeholder="Ex: <h1>Rice and Beans...</h1>" required></textarea>
           </div>
           <div class="button-group">
             <button type="submit" :disabled="isLoading">{{ isEditing ? 'Save' : 'Create' }}</button>
@@ -34,18 +34,18 @@
       </div>
 
       <div class="list-card">
-        <h3>Actual Slides</h3>
+        <h3>Current Slides</h3>
         <div v-if="isLoading && slides.length === 0" class="empty-list">
           Loading slides...
         </div>
         <div v-else-if="slides.length === 0" class="empty-list">
-            No slides avaliable.
+          No slides registered.
         </div>
         <ul v-else class="slide-list">
           <li v-for="slide in slides" :key="slide._id" class="slide-item">
             <div class="slide-info">
               <strong>{{ slide.title }}</strong> ({{ slide.duration }}s)
-              <span>Expires on: {{ new Date(slide.expirationDate).toLocaleString('en-US') }}</span>
+              <span>Expires: {{ new Date(slide.expirationDate).toLocaleString() }}</span>
             </div>
             <div class="slide-actions">
               <button class="btn-edit" @click="editSlide(slide)">Edit</button>
@@ -59,15 +59,19 @@
 </template>
 
 <script>
-function toISODateString(date) {
+// converte a data na data de amanha (estava causando bug)
+function toLocalIsoString(date) {
   const d = new Date(date);
-  if (isNaN(d.getTime())) {
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    return now.toISOString().slice(0, 16);
-  }
+  // subtrai a data do timezone (offset)
   d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
   return d.toISOString().slice(0, 16);
+}
+
+// retorna a data 24 horas dps
+function getTomorrowDate() {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
 }
 
 export default {
@@ -78,7 +82,8 @@ export default {
         title: '',
         duration: 30,
         content: '',
-        expirationDate: toISODateString(new Date()), // datetime atual
+        // FIX: Default is now Tomorrow. No more expired slides on creation.
+        expirationDate: toLocalIsoString(getTomorrowDate()), 
       },
       isEditing: false,
       currentSlideId: null,
@@ -91,7 +96,7 @@ export default {
       this.isLoading = true;
       try {
         const response = await fetch('/api/slide');
-        if (!response.ok) throw new Error('Fail to load slide.');
+        if (!response.ok) throw new Error('Fail to load slides.');
         this.slides = await response.json();
       } catch (err) {
         this.error = err.message;
@@ -116,7 +121,7 @@ export default {
           body: JSON.stringify(this.form),
         });
         if (!response.ok) throw new Error('Fail to create slide.');
-        await this.fetchSlides(); 
+        await this.fetchSlides();
         this.resetForm(); 
       } catch (err) {
         this.error = err.message;
@@ -133,9 +138,9 @@ export default {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.form),
         });
-        if (!response.ok) throw new Error('Failed to update slide.');
-        await this.fetchSlides(); 
-        this.resetForm(); 
+        if (!response.ok) throw new Error('Fail to update slide.');
+        await this.fetchSlides();
+        this.resetForm();
       } catch (err) {
         this.error = err.message;
       } finally {
@@ -146,7 +151,6 @@ export default {
       if (!window.confirm('Are you sure you want to delete this slide?')) {
         return;
       }
-      
       this.isLoading = true;
       this.error = null;
       try {
@@ -167,8 +171,9 @@ export default {
       this.form.title = slide.title;
       this.form.duration = slide.duration;
       this.form.content = slide.content;
-      this.form.expirationDate = toISODateString(slide.expirationDate);
-      window.scrollTo(0, 0); // Rola para o topo
+      // Convert the stored UTC date back to Local Input format
+      this.form.expirationDate = toLocalIsoString(slide.expirationDate);
+      window.scrollTo(0, 0);
     },
     resetForm() {
       this.isEditing = false;
@@ -176,12 +181,13 @@ export default {
       this.form.title = '';
       this.form.duration = 30;
       this.form.content = '';
-      this.form.expirationDate = toISODateString(new Date());
+      // FIX: Reset to Tomorrow
+      this.form.expirationDate = toLocalIsoString(getTomorrowDate());
       this.error = null;
     },
   },
   mounted() {
-    this.fetchSlides(); 
+    this.fetchSlides();
   },
 };
 </script>
@@ -289,7 +295,6 @@ button:not(:disabled):hover { background-color: #6cfadd; }
 }
 .btn-cancel:hover { background-color: #999; }
 
-/* Estilos da Lista de Slides */
 .empty-list {
   color: #9e9e9e;
   text-align: center;
