@@ -27,8 +27,7 @@ export default {
       currentSlideIndex: 0,
       slideTimer: null,
       error: null,
-      //lembrar de alterar essa merda para um token mais dinamico
-      TOTEM_AUTH_TOKEN: '667077beef347746f720f175652869447ab80d9f534c84be6729bdfe0412fd4f',
+      token: null,
     };
   },
   computed: {
@@ -40,17 +39,41 @@ export default {
     },
   },
   methods: {
-    connectSocket() {
+    requestToken() {
+      let inputToken = null;
+      while (!inputToken) {
+        inputToken = prompt("Totem Access: Please enter the Authentication Token");
+      }
+      this.token = inputToken.trim();
+      this.connectSocket();
+    },
 
-      this.socket = io('http://localhost:4000', {
+    connectSocket() {
+      if (!this.token) {
+        this.requestToken();
+        return;
+      }
+
+      this.socket = io({
         auth: {
-          token: this.TOTEM_AUTH_TOKEN,
+          token: this.token,
         },
       });
 
       this.socket.on('connect_error', (err) => {
-        this.error = `Authentication Error: ${err.message}`;
-        console.error(err);
+        console.error('Authentication Error:', err.message);
+        this.error = `Authentication Failed: ${err.message}`;
+        
+        this.token = null;
+        
+        if (this.socket) {
+          this.socket.disconnect();
+        }
+        
+        setTimeout(() => {
+          this.error = null;
+          this.requestToken();
+        }, 2000);
       });
 
       this.socket.on('connect', () => {
@@ -59,9 +82,8 @@ export default {
       });
 
       this.socket.on('update-slides', (newSlides) => {
-        console.log('Slides recived:', newSlides);
+        console.log('Slides received:', newSlides);
         this.slides = newSlides;
-        // Reinicia a exibição
         this.currentSlideIndex = 0;
         this.startSlideShow();
       });
@@ -78,7 +100,7 @@ export default {
       }
 
       if (this.slides.length === 0) {
-        return; //evitar erro se nao tiver nem umslide
+        return;
       }
 
       const duration = this.currentSlide.duration * 1000; 
@@ -90,7 +112,6 @@ export default {
 
     nextSlide() {
       this.currentSlideIndex = (this.currentSlideIndex + 1) % this.slides.length;
-
       this.startSlideShow();
     },
   },
@@ -98,6 +119,7 @@ export default {
   mounted() {
     this.connectSocket();
   },
+  
   beforeUnmount() {
     if (this.slideTimer) {
       clearTimeout(this.slideTimer);
@@ -111,8 +133,7 @@ export default {
 
 <style scoped>
 .totem-container {
-
-    background-color: #000;
+  background-color: #000;
   color: #fff;
   width: 100%;
   flex-grow: 1; 
@@ -120,7 +141,6 @@ export default {
   align-items: center;
   justify-content: center;
   overflow: hidden; 
-  
 }
 
 .slide-content {
