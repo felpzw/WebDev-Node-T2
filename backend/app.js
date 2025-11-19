@@ -6,7 +6,13 @@ const { initSocketServer } = require("./src/api/services/socketServices.js");
 const cookieParser = require("cookie-parser");
 const http = require("http");
 
+//cors necessario apenas para o debug e signin sem o carai do curl
+const cors = require("cors");
+
 const app = express();
+
+//pode comentar no final dos testes
+app.use(cors());
 
 const port = process.env.SERVER_PORT;
 
